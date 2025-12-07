@@ -13,6 +13,10 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.Map;
+
 @RestController
 @AllArgsConstructor
 @RequestMapping("/employee")
@@ -88,11 +92,6 @@ public class EmployeeController {
         employeeRepository.delete(employee);
 
         return ResponseEntity.noContent().build();
-    }
-
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<String> handleException(MethodArgumentNotValidException exception) {
-        return null;
     }
 
     //       var employeeDto = new EmployeeDto(employee.getEmployeeId(), employee.getFirstName(), employee.getLastName(),
