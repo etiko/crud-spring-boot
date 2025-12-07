@@ -1,0 +1,17 @@
+spring:
+  application:
+    name: demo
+  datasource:
+    url: jdbc:mysql://localhost:3308/demo?createDatabaseIfNotExist=true&allowPublicKeyRetrieval=true&useSSL=false
+    username: demo
+    password: demo
+  jpa:
+    show-sql: true
+server:
+  port: 9091
+
+
+
+
+
+
