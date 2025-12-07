@@ -1,6 +1,7 @@
 package com.codewithtoyin.demo.dto;
 
 import com.codewithtoyin.demo.entities.Department;
+import com.codewithtoyin.demo.validator.Lowercase;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
@@ -23,6 +24,7 @@ public class EmployeeDto {
 
     @NotBlank(message = "Email is required")
     @Email(message = "Valid email is required")
+    @Lowercase(message = "Email must be in lowercase")
     private String email;
     private String address;
     private Long departmentId;
