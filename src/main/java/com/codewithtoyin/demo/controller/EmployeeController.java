@@ -1,25 +1,22 @@
 package com.codewithtoyin.demo.controller;
+
 import com.codewithtoyin.demo.dto.EmployeeDto;
-import com.codewithtoyin.demo.dto.RegisterEmployeeRequest;
-import com.codewithtoyin.demo.dto.UpdateEmployeeRequest;
-import com.codewithtoyin.demo.entities.Employee;
 import com.codewithtoyin.demo.mapper.EmployeeMapper;
 import com.codewithtoyin.demo.repositories.DepartmentRepository;
 import com.codewithtoyin.demo.repositories.EmployeeRepository;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.Map;
 
 @RestController
 @AllArgsConstructor
 @RequestMapping("/employee")
+@Tag(name = "Employee")
 public class EmployeeController {
     private final EmployeeMapper employeeMapper;
     private final EmployeeRepository employeeRepository;
@@ -27,10 +24,10 @@ public class EmployeeController {
 
     @GetMapping
     public Iterable<EmployeeDto> getEmployees() {
-       return employeeRepository.findAll()
-               .stream()
-               .map(employeeMapper::toDto)
-               .toList();
+        return employeeRepository.findAll()
+                .stream()
+                .map(employeeMapper::toDto)
+                .toList();
     }
 
     @GetMapping("/{id}")
@@ -44,16 +41,20 @@ public class EmployeeController {
     }
 
     @PostMapping()
-    public ResponseEntity<EmployeeDto> createEmployee(@Valid @RequestBody EmployeeDto employeeDto,
-                                         UriComponentsBuilder uriBuilder) {
+    public ResponseEntity<?> createEmployee(@Valid @RequestBody EmployeeDto employeeDto,
+                                                      UriComponentsBuilder uriBuilder) {
 
         var department = departmentRepository.findById(employeeDto.getDepartmentId()).orElse(null);
         if (department == null) {
             return ResponseEntity.notFound().build();
         }
+        if (employeeRepository.existsByEmail(employeeDto.getEmail())) {
+            return ResponseEntity.badRequest().body(Map.of("email", "Email already exists"));
+        }
 
         var employee = employeeMapper.toEntity(employeeDto);
         employee.setDepartment(department);
+
         var savedEmployee = employeeRepository.save(employee);
         employeeDto.setEmployeeId(savedEmployee.getEmployeeId());
 
