@@ -1,9 +1,8 @@
-package com.codewithtoyin.demo.mapper;
+package com.codewithtoyin.demo.mappers;
 
-import com.codewithtoyin.demo.dto.UserDto;
+import com.codewithtoyin.demo.dtos.UserDto;
 import com.codewithtoyin.demo.entities.User;
 import org.mapstruct.Mapper;
-import org.mapstruct.factory.Mappers;
 
 @Mapper(componentModel = "spring")
 public interface UserMapper {

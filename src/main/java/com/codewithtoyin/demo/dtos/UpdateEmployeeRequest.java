@@ -1,14 +1,12 @@
-package com.codewithtoyin.demo.dto;
+package com.codewithtoyin.demo.dtos;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
-@AllArgsConstructor
 @Data
-public class RegisterEmployeeRequest {
+@AllArgsConstructor
+public class UpdateEmployeeRequest {
     private String firstName;
     private String lastName;
-    private String email;
-    private String address;
     private Long departmentId;
 }

@@ -1,7 +1,7 @@
-package com.codewithtoyin.demo.controller;
+package com.codewithtoyin.demo.controllers;
 
-import com.codewithtoyin.demo.dto.EmployeeDto;
-import com.codewithtoyin.demo.mapper.EmployeeMapper;
+import com.codewithtoyin.demo.dtos.EmployeeDto;
+import com.codewithtoyin.demo.mappers.EmployeeMapper;
 import com.codewithtoyin.demo.repositories.DepartmentRepository;
 import com.codewithtoyin.demo.repositories.EmployeeRepository;
 import io.swagger.v3.oas.annotations.tags.Tag;

@@ -1,4 +1,4 @@
-package com.codewithtoyin.demo.controller;
+package com.codewithtoyin.demo.controllers;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;

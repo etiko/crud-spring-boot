@@ -1,8 +1,7 @@
-package com.codewithtoyin.demo.dto;
+package com.codewithtoyin.demo.dtos;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 @Data
 @AllArgsConstructor

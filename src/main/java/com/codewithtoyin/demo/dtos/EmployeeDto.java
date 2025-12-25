@@ -1,14 +1,11 @@
-package com.codewithtoyin.demo.dto;
+package com.codewithtoyin.demo.dtos;
 
-import com.codewithtoyin.demo.entities.Department;
 import com.codewithtoyin.demo.validator.Lowercase;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.Getter;
 
 @AllArgsConstructor
 @Data

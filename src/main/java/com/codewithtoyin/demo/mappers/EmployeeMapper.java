@@ -1,8 +1,5 @@
-package com.codewithtoyin.demo.mapper;
-import com.codewithtoyin.demo.dto.EmployeeDto;
-import com.codewithtoyin.demo.dto.RegisterEmployeeRequest;
-import com.codewithtoyin.demo.dto.UpdateEmployeeRequest;
-import com.codewithtoyin.demo.entities.Department;
+package com.codewithtoyin.demo.mappers;
+import com.codewithtoyin.demo.dtos.EmployeeDto;
 import com.codewithtoyin.demo.entities.Employee;
 
 import org.mapstruct.Mapper;

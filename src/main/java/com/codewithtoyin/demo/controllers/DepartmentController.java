@@ -1,12 +1,10 @@
-package com.codewithtoyin.demo.controller;
+package com.codewithtoyin.demo.controllers;
 
-import com.codewithtoyin.demo.dto.DepartmentDto;
-import com.codewithtoyin.demo.dto.RegisterDepartmentRequest;
-import com.codewithtoyin.demo.mapper.DepartmentMapper;
+import com.codewithtoyin.demo.dtos.DepartmentDto;
+import com.codewithtoyin.demo.dtos.RegisterDepartmentRequest;
+import com.codewithtoyin.demo.mappers.DepartmentMapper;
 import com.codewithtoyin.demo.repositories.DepartmentRepository;
 import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
