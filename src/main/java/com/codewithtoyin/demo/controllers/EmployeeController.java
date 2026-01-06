@@ -1,16 +1,22 @@
 package com.codewithtoyin.demo.controllers;
 
-import com.codewithtoyin.demo.dtos.EmployeeDto;
+import com.codewithtoyin.demo.dtos.EmployeeRequest;
+import com.codewithtoyin.demo.dtos.EmployeeResponse;
+import com.codewithtoyin.demo.exceptions.DepartmentNotFound;
+import com.codewithtoyin.demo.exceptions.EmailExist;
+import com.codewithtoyin.demo.exceptions.EmployeeNotFound;
 import com.codewithtoyin.demo.mappers.EmployeeMapper;
-import com.codewithtoyin.demo.repositories.DepartmentRepository;
 import com.codewithtoyin.demo.repositories.EmployeeRepository;
+import com.codewithtoyin.demo.services.EmployeeService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -18,81 +24,52 @@ import java.util.Map;
 @RequestMapping("/employee")
 @Tag(name = "Employee")
 public class EmployeeController {
-    private final EmployeeMapper employeeMapper;
-    private final EmployeeRepository employeeRepository;
-    private final DepartmentRepository departmentRepository;
+    private final EmployeeService employeeService;
 
     @GetMapping
-    public Iterable<EmployeeDto> getEmployees() {
-        return employeeRepository.findAll()
-                .stream()
-                .map(employeeMapper::toDto)
-                .toList();
+    public ResponseEntity<List<EmployeeResponse>> getEmployees() {
+        return ResponseEntity.ok(employeeService.getEmployees());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<EmployeeDto> getEmployee(@PathVariable Long id) {
-        var employee = employeeRepository.findById(id).orElse(null);
-        if (employee == null) {
-            return ResponseEntity.notFound().build();
-        }
-        var employeeDto = employeeMapper.toDto(employee);
-        return ResponseEntity.ok(employeeDto);
+    public ResponseEntity<EmployeeResponse> getEmployee(@PathVariable Long id) {
+        return ResponseEntity.ok(employeeService.getEmployee(id));
     }
 
     @PostMapping()
-    public ResponseEntity<?> createEmployee(@Valid @RequestBody EmployeeDto employeeDto,
-                                                      UriComponentsBuilder uriBuilder) {
+    public ResponseEntity<EmployeeResponse> createEmployee(@Valid @RequestBody EmployeeRequest request,
+                                                           UriComponentsBuilder uriBuilder) {
+        var createdEmployee = employeeService.createEmployee(request);
+        var uri = uriBuilder.path("/employee/{id}").buildAndExpand(createdEmployee.getEmployeeId()).toUri();
 
-        var department = departmentRepository.findById(employeeDto.getDepartmentId()).orElse(null);
-        if (department == null) {
-            return ResponseEntity.notFound().build();
-        }
-        if (employeeRepository.existsByEmail(employeeDto.getEmail())) {
-            return ResponseEntity.badRequest().body(Map.of("email", "Email already exists"));
-        }
-
-        var employee = employeeMapper.toEntity(employeeDto);
-        employee.setDepartment(department);
-
-        var savedEmployee = employeeRepository.save(employee);
-        employeeDto.setEmployeeId(savedEmployee.getEmployeeId());
-
-        var uri = uriBuilder.path("/employee/{id}").buildAndExpand(employeeDto.getEmployeeId()).toUri();
-
-        return ResponseEntity.created(uri).body(employeeDto);
+        return ResponseEntity.created(uri).body(createdEmployee);
     }
 
-
     @PutMapping("/{id}")
-    public ResponseEntity<EmployeeDto> updateEmployee(@PathVariable Long id,
-                                                      @RequestBody EmployeeDto employeeDto) {
-        var department = departmentRepository.findById(employeeDto.getDepartmentId()).orElse(null);
-        if (department == null) {
-            return ResponseEntity.notFound().build();
-        }
-
-        var employee = employeeRepository.findById(id).orElse(null);
-        if (employee == null) {
-            return ResponseEntity.notFound().build();
-        }
-
-        employeeMapper.update(employeeDto, employee);
-        employee.setDepartment(department);
-        var savedEmployee = employeeRepository.save(employee);
-
-        return ResponseEntity.ok(employeeMapper.toDto(savedEmployee));
+    public ResponseEntity<EmployeeResponse> updateEmployee(@PathVariable Long id,
+                                                          @Valid @RequestBody EmployeeRequest request) {
+        return ResponseEntity.ok(employeeService.updateEmployee(id, request));
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteEmployee(@PathVariable Long id) {
-        var employee = employeeRepository.findById(id).orElse(null);
-        if (employee == null) {
-            return ResponseEntity.notFound().build();
-        }
-        employeeRepository.delete(employee);
-
+        employeeService.deleteEmployee(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @ExceptionHandler(EmployeeNotFound.class)
+    public ResponseEntity<Map<String, String>> handleEmployeeNotFound() {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("error", "Employee not found"));
+    }
+
+    @ExceptionHandler(DepartmentNotFound.class)
+    public ResponseEntity<Map<String, String>> handleDepartmentNotFound() {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("error", "Department not found"));
+    }
+
+    @ExceptionHandler(EmailExist.class)
+    public ResponseEntity<Map<String, String>> handleEmailExist() {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("error", "Email already exist"));
     }
 
     //       var employeeDto = new EmployeeDto(employee.getEmployeeId(), employee.getFirstName(), employee.getLastName(),

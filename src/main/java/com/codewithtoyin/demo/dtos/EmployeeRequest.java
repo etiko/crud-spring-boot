@@ -9,8 +9,7 @@ import lombok.Data;
 
 @AllArgsConstructor
 @Data
-public class EmployeeDto {
-    private Long employeeId;
+public class EmployeeRequest {
     @NotBlank(message = "First name is required")
     @Size(max = 255, message = "Must be less than 255 characters")
     private String firstName;
@@ -23,6 +22,8 @@ public class EmployeeDto {
     @Email(message = "Valid email is required")
     @Lowercase(message = "Email must be in lowercase")
     private String email;
+
+    @Size(max = 500, message = "Must be less than 500 characters")
     private String address;
     private Long departmentId;
 }
