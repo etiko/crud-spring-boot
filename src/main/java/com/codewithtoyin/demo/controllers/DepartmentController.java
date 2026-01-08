@@ -2,65 +2,43 @@ package com.codewithtoyin.demo.controllers;
 
 import com.codewithtoyin.demo.dtos.DepartmentDto;
 import com.codewithtoyin.demo.dtos.RegisterDepartmentRequest;
-import com.codewithtoyin.demo.mappers.DepartmentMapper;
-import com.codewithtoyin.demo.repositories.DepartmentRepository;
+import com.codewithtoyin.demo.services.DepartmentService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/department")
 @AllArgsConstructor
 public class DepartmentController {
-    private DepartmentRepository departmentRepository;
-    private DepartmentMapper departmentMapper;
+    private final DepartmentService departmentService;
 
     @GetMapping
-    public Iterable<DepartmentDto> getDepartments() {
-        return departmentRepository.findAll()
-                .stream()
-                .map(departmentMapper::toDto)
-                .toList();
+    public ResponseEntity<List<DepartmentDto>> getDepartments() {
+        return ResponseEntity.ok(departmentService.getDepartments());
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<DepartmentDto> getDepartmentById(@PathVariable Long id) {
-        var department = departmentRepository.findById(id).orElse(null);
-        if (department == null) {
-            return ResponseEntity.notFound().build();
-        }
-        return ResponseEntity.ok(departmentMapper.toDto(department));
+        return ResponseEntity.ok(departmentService.getDepartmentById(id));
     }
 
     @PostMapping
     public ResponseEntity<DepartmentDto> createDepartment(@RequestBody RegisterDepartmentRequest request) {
-        var department = departmentMapper.toEntity(request);
-
-        var savedDepartment = departmentRepository.save(department);
-
-        return ResponseEntity.ok(departmentMapper.toDto(savedDepartment));
+      return ResponseEntity.ok(departmentService.createDepartment(request));
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<DepartmentDto> updateDepartment(@PathVariable Long id,
                                                           @RequestBody RegisterDepartmentRequest request) {
-        var department = departmentRepository.findById(id).orElse(null);
-        if (department == null) {
-            ResponseEntity.notFound().build();
-        }
-        departmentMapper.update(request, department);
-        var savedDepartment = departmentRepository.save(department);
-
-       return ResponseEntity.ok(departmentMapper.toDto(savedDepartment));
+       return ResponseEntity.ok(departmentService.updateDepartment(id, request));
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteDepartmentById(@PathVariable Long id) {
-        var department = departmentRepository.findById(id).orElse(null);
-        if (department == null) {
-            ResponseEntity.notFound().build();
-        }
-        departmentRepository.delete(department);
+        departmentService.deleteDepartment(id);
         return ResponseEntity.noContent().build();
     }
 }
