@@ -21,7 +21,7 @@ public class Department {
     private Long departmentId;
 
     @Column(name = "name")
-    private String name;
+    private String departmentName;
 
     @OneToMany(mappedBy = "department")
     @ToString.Exclude

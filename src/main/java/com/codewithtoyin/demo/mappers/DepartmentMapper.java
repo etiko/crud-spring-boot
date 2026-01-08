@@ -6,9 +6,9 @@ import com.codewithtoyin.demo.entities.Department;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingTarget;
 
-@Mapper(componentModel = "Spring")
+@Mapper(componentModel = "spring")
 public interface DepartmentMapper {
-    DepartmentDto departmentToDepartmentDto(Department department);
-    Department departmentDtoToDepartment(RegisterDepartmentRequest request);
+    DepartmentDto toDto(Department department);
+    Department toEntity(RegisterDepartmentRequest request);
     void update(RegisterDepartmentRequest request, @MappingTarget Department department);
 }

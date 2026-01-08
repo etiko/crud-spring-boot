@@ -5,8 +5,6 @@ import com.codewithtoyin.demo.dtos.EmployeeResponse;
 import com.codewithtoyin.demo.exceptions.DepartmentNotFound;
 import com.codewithtoyin.demo.exceptions.EmailExist;
 import com.codewithtoyin.demo.exceptions.EmployeeNotFound;
-import com.codewithtoyin.demo.mappers.EmployeeMapper;
-import com.codewithtoyin.demo.repositories.EmployeeRepository;
 import com.codewithtoyin.demo.services.EmployeeService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;

@@ -1,7 +1,11 @@
 package com.codewithtoyin.demo.dtos;
 
+import com.codewithtoyin.demo.enums.Roles;
+import com.codewithtoyin.demo.enums.Status;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+
+import java.time.LocalDate;
 
 @Data
 @AllArgsConstructor
@@ -11,6 +15,14 @@ public class EmployeeResponse {
     private String lastName;
     private String email;
     private String address;
+
+    private String jobTitle;
+    private Status status;
+    private Roles role;
+
+    private LocalDate startDate;
+    private LocalDate createdAt;
+
     private Long departmentId;
-    private String name;
+    private String departmentName;
 }

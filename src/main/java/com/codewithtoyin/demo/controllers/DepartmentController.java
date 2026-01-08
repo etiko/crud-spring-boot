@@ -19,7 +19,7 @@ public class DepartmentController {
     public Iterable<DepartmentDto> getDepartments() {
         return departmentRepository.findAll()
                 .stream()
-                .map(departmentMapper::departmentToDepartmentDto)
+                .map(departmentMapper::toDto)
                 .toList();
     }
 
@@ -29,28 +29,29 @@ public class DepartmentController {
         if (department == null) {
             return ResponseEntity.notFound().build();
         }
-        return ResponseEntity.ok(departmentMapper.departmentToDepartmentDto(department));
+        return ResponseEntity.ok(departmentMapper.toDto(department));
     }
 
     @PostMapping
     public ResponseEntity<DepartmentDto> createDepartment(@RequestBody RegisterDepartmentRequest request) {
-        var department = departmentMapper.departmentDtoToDepartment(request);
+        var department = departmentMapper.toEntity(request);
 
-        departmentRepository.save(department);
+        var savedDepartment = departmentRepository.save(department);
 
-        return ResponseEntity.ok(departmentMapper.departmentToDepartmentDto(department));
+        return ResponseEntity.ok(departmentMapper.toDto(savedDepartment));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<DepartmentDto> updateDepartment(@PathVariable Long id, @RequestBody RegisterDepartmentRequest request) {
+    public ResponseEntity<DepartmentDto> updateDepartment(@PathVariable Long id,
+                                                          @RequestBody RegisterDepartmentRequest request) {
         var department = departmentRepository.findById(id).orElse(null);
         if (department == null) {
             ResponseEntity.notFound().build();
         }
         departmentMapper.update(request, department);
-        departmentRepository.save(department);
+        var savedDepartment = departmentRepository.save(department);
 
-       return ResponseEntity.ok(departmentMapper.departmentToDepartmentDto(department));
+       return ResponseEntity.ok(departmentMapper.toDto(savedDepartment));
     }
 
     @DeleteMapping("/{id}")

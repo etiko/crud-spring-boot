@@ -25,5 +25,6 @@ public class EmployeeRequest {
 
     @Size(max = 500, message = "Must be less than 500 characters")
     private String address;
+    private String jobTitle;
     private Long departmentId;
 }

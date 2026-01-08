@@ -7,5 +7,6 @@ import lombok.Getter;
 @Getter
 public class DepartmentDto {
     private Long departmentId;
-    private String name;
+    private String departmentName;
+
 }

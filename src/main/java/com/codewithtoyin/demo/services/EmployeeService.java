@@ -11,6 +11,7 @@ import com.codewithtoyin.demo.repositories.EmployeeRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Service
@@ -47,6 +48,7 @@ public class EmployeeService {
 
         var employee = employeeMapper.toEntity(request);
         employee.setDepartment(department);
+        employee.setStartDate(LocalDate.now());
 
         var savedEmployee = employeeRepository.save(employee);
         return employeeMapper.toResponse(savedEmployee);

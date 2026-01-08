@@ -6,5 +6,6 @@ import lombok.Data;
 @Data
 @AllArgsConstructor
 public class RegisterDepartmentRequest {
-    private String name;
+    private String departmentName;
+
 }

@@ -11,7 +11,8 @@ import org.mapstruct.MappingTarget;
 public interface EmployeeMapper {
 
     @Mapping(target = "departmentId", source = "department.departmentId")
-    @Mapping(target = "name", source = "department.name")
+    @Mapping(target = "departmentName", source = "department.departmentName")
+
     EmployeeResponse toResponse(Employee employee);
 
     Employee toEntity(EmployeeRequest request);
@@ -19,15 +20,5 @@ public interface EmployeeMapper {
     @Mapping(target = "employeeId", ignore = true)
     @Mapping(target = "department", ignore = true)
     void update(EmployeeRequest request, @MappingTarget Employee employee);
-
-//    @Mapping(target = "departmentId", source = "department.departmentId")
-//    EmployeeRequest toDto(Employee employee);
-//
-//    Employee toEntity(EmployeeRequest employeeRequest);
-//
-//    @Mapping(target = "employeeId", ignore = true)
-//    @Mapping(target = "department", ignore = true)
-//    void update(EmployeeRequest employeeRequest, @MappingTarget Employee employee);
-
 
 }
