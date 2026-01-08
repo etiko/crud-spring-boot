@@ -1,12 +1,11 @@
 package com.codewithtoyin.demo.dtos;
 
 import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Data;
 
+@Data
 @AllArgsConstructor
-@Getter
-public class DepartmentDto {
-    private Long departmentId;
+public class DepartmentRequest {
     private String departmentName;
 
 }

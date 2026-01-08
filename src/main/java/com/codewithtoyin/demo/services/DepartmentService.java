@@ -1,7 +1,7 @@
 package com.codewithtoyin.demo.services;
 
-import com.codewithtoyin.demo.dtos.DepartmentDto;
-import com.codewithtoyin.demo.dtos.RegisterDepartmentRequest;
+import com.codewithtoyin.demo.dtos.DepartmentResponse;
+import com.codewithtoyin.demo.dtos.DepartmentRequest;
 import com.codewithtoyin.demo.exceptions.DepartmentNotFound;
 import com.codewithtoyin.demo.mappers.DepartmentMapper;
 import com.codewithtoyin.demo.repositories.DepartmentRepository;
@@ -17,29 +17,29 @@ public class DepartmentService {
     private final DepartmentMapper departmentMapper;
     private final DepartmentRepository departmentRepository;
 
-    public List<DepartmentDto> getDepartments() {
+    public List<DepartmentResponse> getDepartments() {
         return departmentRepository.findAll()
                 .stream()
-                .map(departmentMapper::toDto)
+                .map(departmentMapper::toResponse)
                 .toList();
     }
 
-    public DepartmentDto getDepartmentById(Long id) {
+    public DepartmentResponse getDepartmentById(Long id) {
         var department = departmentRepository.findById(id).orElse(null);
         if (department == null) {
             throw new DepartmentNotFound();
         }
-        return departmentMapper.toDto(department);
+        return departmentMapper.toResponse(department);
     }
 
-    public DepartmentDto createDepartment(RegisterDepartmentRequest request) {
+    public DepartmentResponse createDepartment(DepartmentRequest request) {
         var department = departmentMapper.toEntity(request);
         var savedDepartment = departmentRepository.save(department);
 
-        return departmentMapper.toDto(savedDepartment);
+        return departmentMapper.toResponse(savedDepartment);
     }
 
-    public DepartmentDto updateDepartment(Long id, RegisterDepartmentRequest request) {
+    public DepartmentResponse updateDepartment(Long id, DepartmentRequest request) {
         var department = departmentRepository.findById(id).orElse(null);
         if (department == null) {
             throw new DepartmentNotFound();
@@ -47,7 +47,7 @@ public class DepartmentService {
         departmentMapper.update(request, department);
         var savedDepartment = departmentRepository.save(department);
 
-        return departmentMapper.toDto(savedDepartment);
+        return departmentMapper.toResponse(savedDepartment);
     }
 
     public void deleteDepartment(Long id) {
