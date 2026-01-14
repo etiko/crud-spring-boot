@@ -1,0 +1,8 @@
+package com.codewithtoyin.demo.enums;
+
+public enum LeaveStatus {
+    PENDING,
+    APPROVED,
+    REJECTED,
+    CANCELED
+}

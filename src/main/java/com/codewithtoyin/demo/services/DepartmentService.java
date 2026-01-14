@@ -8,6 +8,8 @@ import com.codewithtoyin.demo.repositories.DepartmentRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -34,6 +36,7 @@ public class DepartmentService {
 
     public DepartmentResponse createDepartment(DepartmentRequest request) {
         var department = departmentMapper.toEntity(request);
+        department.setCreatedAt(LocalDateTime.now());
         var savedDepartment = departmentRepository.save(department);
 
         return departmentMapper.toResponse(savedDepartment);
