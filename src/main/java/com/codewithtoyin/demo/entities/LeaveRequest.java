@@ -5,6 +5,7 @@ import com.codewithtoyin.demo.enums.LeaveType;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 import java.time.Instant;
 import java.time.LocalDate;
@@ -14,6 +15,7 @@ import java.time.LocalDateTime;
 @Setter
 @Entity
 @Table(name = "leave_requests")
+@ToString
 public class LeaveRequest {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -45,6 +47,6 @@ public class LeaveRequest {
     private LocalDate decidedAt;
 
     @Column(name = "created_at")
-    private LocalDateTime createdAt;
+    private LocalDateTime createdAt = LocalDateTime.now();
 
 }
