@@ -1,6 +1,6 @@
 package com.codewithtoyin.demo.dtos;
 
-import com.codewithtoyin.demo.enums.Roles;
+import com.codewithtoyin.demo.enums.Role;
 import com.codewithtoyin.demo.enums.Status;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -18,7 +18,7 @@ public class EmployeeResponse {
 
     private String jobTitle;
     private Status status;
-    private Roles role;
+    private Role role;
 
     private LocalDate startDate;
     private LocalDate createdAt;

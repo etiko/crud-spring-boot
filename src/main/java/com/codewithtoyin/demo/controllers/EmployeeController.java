@@ -2,9 +2,12 @@ package com.codewithtoyin.demo.controllers;
 
 import com.codewithtoyin.demo.dtos.EmployeeRequest;
 import com.codewithtoyin.demo.dtos.EmployeeResponse;
+import com.codewithtoyin.demo.enums.Role;
 import com.codewithtoyin.demo.exceptions.DepartmentNotFound;
 import com.codewithtoyin.demo.exceptions.EmailExist;
 import com.codewithtoyin.demo.exceptions.EmployeeNotFound;
+import com.codewithtoyin.demo.mappers.EmployeeMapper;
+import com.codewithtoyin.demo.repositories.EmployeeRepository;
 import com.codewithtoyin.demo.services.EmployeeService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -23,6 +26,8 @@ import java.util.Map;
 @Tag(name = "Employee")
 public class EmployeeController {
     private final EmployeeService employeeService;
+    private final EmployeeRepository employeeRepository;
+    private final EmployeeMapper employeeMapper;
 
     @GetMapping
     public ResponseEntity<List<EmployeeResponse>> getEmployees() {
@@ -49,6 +54,11 @@ public class EmployeeController {
         return ResponseEntity.ok(employeeService.updateEmployee(id, request));
     }
 
+    @PutMapping("/{id}/role")
+    public ResponseEntity<EmployeeResponse> updateEmployeeRole(@PathVariable Long id) {
+       return ResponseEntity.ok(employeeService.updateEmployeeRole(id));
+    }
+
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteEmployee(@PathVariable Long id) {
         employeeService.deleteEmployee(id);
@@ -69,34 +79,5 @@ public class EmployeeController {
     public ResponseEntity<Map<String, String>> handleEmailExist() {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("error", "Email already exist"));
     }
-
-    //       var employeeDto = new EmployeeDto(employee.getEmployeeId(), employee.getFirstName(), employee.getLastName(),
-//               employee.getDepartment() == null ? null : employee.getDepartment().getDepartmentId());
-//       return ResponseEntity.ok(employeeMapper::toDto);
-//}
-
-//        // 1. Load department from DB
-//        Department department = departmentRepository.findById(request.getDepartmentId())
-//                .orElseThrow(() -> new RuntimeException("Department not found"));
-//
-//        // 2. Create Employee entity
-//        Employee employee = new Employee();
-//        employee.setFirstName(request.getFirstName());
-//        employee.setLastName(request.getLastName());
-//        employee.setEmail(request.getEmail());
-//        employee.setAddress(request.getAddress());
-//        employee.setDepartment(department);
-//
-//        // 3. Save
-//        Employee saved = employeeRepository.save(employee);
-//
-//        // 4. Return response dto (you can customise)
-//        return new EmployeeDto(
-//                saved.getEmployeeId(),
-//                saved.getFirstName(),
-//                saved.getLastName(),
-//                department.getDepartmentId()
-//        );
-
 
 }

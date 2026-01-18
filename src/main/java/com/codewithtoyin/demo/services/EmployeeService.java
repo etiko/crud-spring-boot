@@ -2,6 +2,7 @@ package com.codewithtoyin.demo.services;
 
 import com.codewithtoyin.demo.dtos.EmployeeRequest;
 import com.codewithtoyin.demo.dtos.EmployeeResponse;
+import com.codewithtoyin.demo.enums.Role;
 import com.codewithtoyin.demo.exceptions.DepartmentNotFound;
 import com.codewithtoyin.demo.exceptions.EmailExist;
 import com.codewithtoyin.demo.exceptions.EmployeeNotFound;
@@ -9,6 +10,7 @@ import com.codewithtoyin.demo.mappers.EmployeeMapper;
 import com.codewithtoyin.demo.repositories.DepartmentRepository;
 import com.codewithtoyin.demo.repositories.EmployeeRepository;
 import lombok.AllArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -69,6 +71,17 @@ public class EmployeeService {
         employee.setDepartment(department);
         var savedEmployee = employeeRepository.save(employee);
 
+        return employeeMapper.toResponse(savedEmployee);
+    }
+
+    public EmployeeResponse updateEmployeeRole(Long employeeId) {
+        var employee = employeeRepository.findById(employeeId).orElse(null);
+        if (employee == null) {
+            throw new EmployeeNotFound();
+        }
+
+        employee.setRole(Role.MANAGER);
+        var savedEmployee = employeeRepository.save(employee);
         return employeeMapper.toResponse(savedEmployee);
     }
 

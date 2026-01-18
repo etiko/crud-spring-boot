@@ -1,6 +1,6 @@
 package com.codewithtoyin.demo.entities;
 
-import com.codewithtoyin.demo.enums.Roles;
+import com.codewithtoyin.demo.enums.Role;
 import com.codewithtoyin.demo.enums.Status;
 import jakarta.persistence.*;
 import lombok.*;
@@ -43,7 +43,7 @@ public class Employee {
 
     @Column(name = "role")
     @Enumerated(EnumType.STRING)
-    private Roles role = Roles.EMPLOYEE;
+    private Role role = Role.EMPLOYEE;
 
     @Column(name = "start_date")
     private LocalDate startDate;

@@ -1,7 +1,8 @@
 package com.codewithtoyin.demo.enums;
 
-public enum Roles {
+public enum Role {
     EMPLOYEE,
     MANAGER,
-    ADMIN
+    ADMIN,
+    HR
 }
