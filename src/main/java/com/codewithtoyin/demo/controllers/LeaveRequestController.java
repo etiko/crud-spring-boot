@@ -35,8 +35,20 @@ public class LeaveRequestController {
         return ResponseEntity.ok(leaveRequestService.submitLeaveRequest(id, request));
     }
 
-    @ExceptionHandler(LeaveNotFound.class)
-    public ResponseEntity<Map<String, String>> handleLeaveNotFound(){
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("message", "Leave request not found"));
+    @PostMapping("/{id}/approve")
+    public ResponseEntity<LeaveRequestResponse> approveLeaveRequest(@PathVariable Long id) {
+        return ResponseEntity.ok(leaveRequestService.approveLeaveRequest(id));
     }
+
+    @PostMapping("/{id}/reject")
+    public ResponseEntity<LeaveRequestResponse> rejectLeaveRequest(@PathVariable Long id) {
+        return ResponseEntity.ok(leaveRequestService.rejectLeaveRequest(id));
+    }
+
+    @PostMapping("/{id}/cancel")
+    public ResponseEntity<LeaveRequestResponse> cancelLeaveRequest(@PathVariable Long id) {
+        return ResponseEntity.ok(leaveRequestService.cancelLeaveRequest(id));
+    }
+
+
 }

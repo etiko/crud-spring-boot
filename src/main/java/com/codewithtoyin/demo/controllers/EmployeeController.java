@@ -65,19 +65,4 @@ public class EmployeeController {
         return ResponseEntity.noContent().build();
     }
 
-    @ExceptionHandler(EmployeeNotFound.class)
-    public ResponseEntity<Map<String, String>> handleEmployeeNotFound() {
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("error", "Employee not found"));
-    }
-
-    @ExceptionHandler(DepartmentNotFound.class)
-    public ResponseEntity<Map<String, String>> handleDepartmentNotFound() {
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("error", "Department not found"));
-    }
-
-    @ExceptionHandler(EmailExist.class)
-    public ResponseEntity<Map<String, String>> handleEmailExist() {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("error", "Email already exist"));
-    }
-
 }

@@ -2,14 +2,16 @@ package com.codewithtoyin.demo.services;
 
 import com.codewithtoyin.demo.dtos.LeaveRequestRequest;
 import com.codewithtoyin.demo.dtos.LeaveRequestResponse;
+import com.codewithtoyin.demo.entities.LeaveRequest;
 import com.codewithtoyin.demo.enums.LeaveStatus;
 import com.codewithtoyin.demo.exceptions.EmployeeNotFound;
+import com.codewithtoyin.demo.exceptions.InvalidRequestState;
 import com.codewithtoyin.demo.exceptions.LeaveNotFound;
 import com.codewithtoyin.demo.mappers.LeaveRequestMapper;
 import com.codewithtoyin.demo.repositories.EmployeeRepository;
 import com.codewithtoyin.demo.repositories.LeaveRequestRepository;
+import com.sun.jdi.request.InvalidRequestStateException;
 import lombok.AllArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -36,12 +38,7 @@ public class LeaveRequestService {
     }
 
     public LeaveRequestResponse getLeaveRequestById(Long id) {
-        var foundLeaveRequest = leaveRequestRepository.findById(id).orElse(null);
-
-        if (foundLeaveRequest == null) {
-            throw new LeaveNotFound();
-//            ResponseEntity.notFound().build();
-        }
+        var foundLeaveRequest = getLeaveRequest(id);
 
         return leaveRequestMapper.toResponse(foundLeaveRequest);
 
@@ -91,6 +88,48 @@ public class LeaveRequestService {
 //        response.setLeaveType(savedLeaveRequest.getType());
 //        response.setLeaveStatus(savedLeaveRequest.getStatus());
 
+    }
+
+    public LeaveRequestResponse approveLeaveRequest(Long id) {
+        var leaveRequest = getLeaveRequest(id);
+        assertPending(leaveRequest, "approve");
+
+        leaveRequest.setStatus(LeaveStatus.APPROVED);
+        var savedLeaveRequest = leaveRequestRepository.save(leaveRequest);
+
+        return leaveRequestMapper.toResponse(savedLeaveRequest);
+    }
+
+    public LeaveRequestResponse rejectLeaveRequest(Long id) {
+        var leaveRequest = getLeaveRequest(id);
+        assertPending(leaveRequest, "reject");
+
+        leaveRequest.setStatus(LeaveStatus.REJECTED);
+        var savedLeaveRequest = leaveRequestRepository.save(leaveRequest);
+
+        return leaveRequestMapper.toResponse(savedLeaveRequest);
+    }
+
+    public LeaveRequestResponse cancelLeaveRequest(Long id) {
+        var leaveRequest = getLeaveRequest(id);
+        assertPending(leaveRequest, "cancel");
+
+        leaveRequest.setStatus(LeaveStatus.CANCELLED);
+        var savedLeaveRequest = leaveRequestRepository.save(leaveRequest);
+
+        return leaveRequestMapper.toResponse(savedLeaveRequest);
+    }
+
+    private static void assertPending(LeaveRequest leaveRequest, String action) {
+        if (leaveRequest.getStatus() != LeaveStatus.PENDING) {
+           throw new InvalidRequestState("Cannot " + action + " a leave request in status " +
+                   leaveRequest.getStatus());
+        }
+    }
+
+    private LeaveRequest getLeaveRequest(Long id) {
+        return leaveRequestRepository.findById(id).orElseThrow(
+                () -> new LeaveNotFound("Leave request " + id + " not found"));
     }
 
 
