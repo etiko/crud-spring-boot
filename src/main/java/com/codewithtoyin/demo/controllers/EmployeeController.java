@@ -26,8 +26,6 @@ import java.util.Map;
 @Tag(name = "Employee")
 public class EmployeeController {
     private final EmployeeService employeeService;
-    private final EmployeeRepository employeeRepository;
-    private final EmployeeMapper employeeMapper;
 
     @GetMapping
     public ResponseEntity<List<EmployeeResponse>> getEmployees() {
@@ -43,7 +41,9 @@ public class EmployeeController {
     public ResponseEntity<EmployeeResponse> createEmployee(@Valid @RequestBody EmployeeRequest request,
                                                            UriComponentsBuilder uriBuilder) {
         var createdEmployee = employeeService.createEmployee(request);
-        var uri = uriBuilder.path("/employee/{id}").buildAndExpand(createdEmployee.getEmployeeId()).toUri();
+        var uri = uriBuilder.path("/employee/{id}")
+                .buildAndExpand(createdEmployee.getEmployeeId())
+                .toUri();
 
         return ResponseEntity.created(uri).body(createdEmployee);
     }

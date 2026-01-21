@@ -2,13 +2,13 @@ package com.codewithtoyin.demo.services;
 
 import com.codewithtoyin.demo.dtos.DepartmentResponse;
 import com.codewithtoyin.demo.dtos.DepartmentRequest;
+import com.codewithtoyin.demo.entities.Department;
 import com.codewithtoyin.demo.exceptions.DepartmentNotFound;
 import com.codewithtoyin.demo.mappers.DepartmentMapper;
 import com.codewithtoyin.demo.repositories.DepartmentRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -27,38 +27,33 @@ public class DepartmentService {
     }
 
     public DepartmentResponse getDepartmentById(Long id) {
-        var department = departmentRepository.findById(id).orElse(null);
-        if (department == null) {
-            throw new DepartmentNotFound();
-        }
-        return departmentMapper.toResponse(department);
+        return departmentMapper.toResponse(getDepartment(id));
     }
 
     public DepartmentResponse createDepartment(DepartmentRequest request) {
         var department = departmentMapper.toEntity(request);
         department.setCreatedAt(LocalDateTime.now());
+
         var savedDepartment = departmentRepository.save(department);
 
         return departmentMapper.toResponse(savedDepartment);
     }
 
     public DepartmentResponse updateDepartment(Long id, DepartmentRequest request) {
-        var department = departmentRepository.findById(id).orElse(null);
-        if (department == null) {
-            throw new DepartmentNotFound();
-        }
+        var department = getDepartment(id);
         departmentMapper.update(request, department);
+
         var savedDepartment = departmentRepository.save(department);
 
         return departmentMapper.toResponse(savedDepartment);
     }
 
     public void deleteDepartment(Long id) {
-        var department = departmentRepository.findById(id).orElse(null);
-        if (department == null) {
-            throw new DepartmentNotFound();
-        }
-        departmentRepository.delete(department);
+        departmentRepository.delete(getDepartment(id));
+    }
+
+    private Department getDepartment(Long id) {
+        return departmentRepository.findById(id).orElseThrow(() -> new DepartmentNotFound());
     }
 
 }
