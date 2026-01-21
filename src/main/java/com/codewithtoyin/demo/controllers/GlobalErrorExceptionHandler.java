@@ -12,18 +12,18 @@ import java.util.Map;
 public class GlobalErrorExceptionHandler {
 
     @ExceptionHandler(EmployeeNotFound.class)
-    public ResponseEntity<Map<String, String>> handleEmployeeNotFound() {
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("error", "Employee not found"));
+    public ResponseEntity<Map<String, String>> handleEmployeeNotFound(EmployeeNotFound ex) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("error", ex.getMessage()));
     }
 
     @ExceptionHandler(DepartmentNotFound.class)
-    public ResponseEntity<Map<String, String>> handleDepartmentNotFound() {
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("error", "Department not found"));
+    public ResponseEntity<Map<String, String>> handleDepartmentNotFound(DepartmentNotFound ex) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("error", ex.getMessage()));
     }
 
     @ExceptionHandler(EmailExist.class)
-    public ResponseEntity<Map<String, String>> handleEmailExist() {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("error", "Email already exist"));
+    public ResponseEntity<Map<String, String>> handleEmailExist(EmailExist ex) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("error", ex.getMessage()));
     }
 
     @ExceptionHandler(LeaveNotFound.class)

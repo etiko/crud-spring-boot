@@ -2,6 +2,7 @@ package com.codewithtoyin.demo.services;
 
 import com.codewithtoyin.demo.dtos.LeaveRequestRequest;
 import com.codewithtoyin.demo.dtos.LeaveRequestResponse;
+import com.codewithtoyin.demo.entities.Employee;
 import com.codewithtoyin.demo.entities.LeaveRequest;
 import com.codewithtoyin.demo.enums.LeaveStatus;
 import com.codewithtoyin.demo.exceptions.EmployeeNotFound;
@@ -38,9 +39,7 @@ public class LeaveRequestService {
     }
 
     public LeaveRequestResponse getLeaveRequestById(Long id) {
-        var foundLeaveRequest = getLeaveRequest(id);
-
-        return leaveRequestMapper.toResponse(foundLeaveRequest);
+        return leaveRequestMapper.toResponse(getLeaveRequest(id));
 
 //        var leaveRequestResponse = new LeaveRequestResponse();
 //        leaveRequestResponse.setId(foundLeaveRequest.getId());
@@ -55,18 +54,17 @@ public class LeaveRequestService {
     }
 
     public LeaveRequestResponse submitLeaveRequest(Long id, LeaveRequestRequest request) {
-        var employee = employeeRepository.findById(id).orElse(null);
-        if (employee == null) {
-            throw new EmployeeNotFound();
-        }
+        var employee = findEmployee(id);
 
 //      TODO: need to find a unique param to prevent duplicate or overlapping entries.
 
         var leaveRequestEntity = leaveRequestMapper.toEntity(request);
+
         leaveRequestEntity.setEmployee(employee);
         leaveRequestEntity.setStatus(LeaveStatus.PENDING);
 
         var savedLeaveRequest = leaveRequestRepository.save(leaveRequestEntity);
+
         return leaveRequestMapper.toResponse(savedLeaveRequest);
 
         //        Manually creating instance.
@@ -130,6 +128,11 @@ public class LeaveRequestService {
     private LeaveRequest getLeaveRequest(Long id) {
         return leaveRequestRepository.findById(id).orElseThrow(
                 () -> new LeaveNotFound("Leave request " + id + " not found"));
+    }
+
+    private Employee findEmployee(Long employeeId) {
+        return employeeRepository.findById(employeeId)
+                .orElseThrow(() -> new EmployeeNotFound("Employee " + employeeId + " not found"));
     }
 
 

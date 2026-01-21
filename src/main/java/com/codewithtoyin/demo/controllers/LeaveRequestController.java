@@ -2,15 +2,13 @@ package com.codewithtoyin.demo.controllers;
 
 import com.codewithtoyin.demo.dtos.LeaveRequestRequest;
 import com.codewithtoyin.demo.dtos.LeaveRequestResponse;
-import com.codewithtoyin.demo.exceptions.LeaveNotFound;
 import com.codewithtoyin.demo.services.LeaveRequestService;
 import lombok.AllArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.List;
-import java.util.Map;
 
 @AllArgsConstructor
 @RestController()
@@ -31,8 +29,12 @@ public class LeaveRequestController {
 
     @PostMapping("/{id}")
     public ResponseEntity<LeaveRequestResponse> submitLeaveRequest(
-            @PathVariable Long id, @RequestBody LeaveRequestRequest request) {
-        return ResponseEntity.ok(leaveRequestService.submitLeaveRequest(id, request));
+            @PathVariable Long id, @RequestBody LeaveRequestRequest request,
+            UriComponentsBuilder uriBuilder) {
+        var createdLeaveRequest = leaveRequestService.submitLeaveRequest(id, request);
+        var uri = uriBuilder.path("/leave_request/{id}").buildAndExpand(createdLeaveRequest.getId()).toUri();
+
+        return ResponseEntity.created(uri).body(createdLeaveRequest);
     }
 
     @PostMapping("/{id}/approve")

@@ -2,6 +2,8 @@ package com.codewithtoyin.demo.services;
 
 import com.codewithtoyin.demo.dtos.EmployeeRequest;
 import com.codewithtoyin.demo.dtos.EmployeeResponse;
+import com.codewithtoyin.demo.entities.Department;
+import com.codewithtoyin.demo.entities.Employee;
 import com.codewithtoyin.demo.enums.Role;
 import com.codewithtoyin.demo.exceptions.DepartmentNotFound;
 import com.codewithtoyin.demo.exceptions.EmailExist;
@@ -10,7 +12,6 @@ import com.codewithtoyin.demo.mappers.EmployeeMapper;
 import com.codewithtoyin.demo.repositories.DepartmentRepository;
 import com.codewithtoyin.demo.repositories.EmployeeRepository;
 import lombok.AllArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -31,65 +32,61 @@ public class EmployeeService {
     }
 
     public EmployeeResponse getEmployee(Long employeeId) {
-        var employee = employeeRepository.findById(employeeId).orElse(null);
-        if (employee == null) {
-            throw new EmployeeNotFound();
-        }
+        var employee =findEmployee(employeeId);
 
         return employeeMapper.toResponse(employee);
     }
 
     public EmployeeResponse createEmployee(EmployeeRequest request) {
-        var department = departmentRepository.findById(request.getDepartmentId()).orElse(null);
-        if (department == null) {
-            throw new DepartmentNotFound();
-        }
+        var department = findDepartment(request.getDepartmentId());
+
         if (employeeRepository.existsByEmail(request.getEmail())) {
-            throw new EmailExist();
+            throw new EmailExist("Email address " + request.getEmail() + " exist. Try another");
         }
 
         var employee = employeeMapper.toEntity(request);
+
         employee.setDepartment(department);
         employee.setStartDate(LocalDate.now());
 
         var savedEmployee = employeeRepository.save(employee);
+
         return employeeMapper.toResponse(savedEmployee);
     }
 
     public EmployeeResponse updateEmployee(Long employeeId, EmployeeRequest request) {
-        var department = departmentRepository.findById(request.getDepartmentId()).orElse(null);
-        if (department == null) {
-            throw new DepartmentNotFound();
-        }
-
-        var employee = employeeRepository.findById(employeeId).orElse(null);
-        if (employee == null) {
-            throw new EmployeeNotFound();
-        }
+        var department = findDepartment(request.getDepartmentId());
+        var employee = findEmployee(employeeId);
 
         employeeMapper.update(request, employee);
         employee.setDepartment(department);
+
         var savedEmployee = employeeRepository.save(employee);
 
         return employeeMapper.toResponse(savedEmployee);
     }
 
     public EmployeeResponse updateEmployeeRole(Long employeeId) {
-        var employee = employeeRepository.findById(employeeId).orElse(null);
-        if (employee == null) {
-            throw new EmployeeNotFound();
-        }
+        var employee = findEmployee(employeeId);
 
         employee.setRole(Role.MANAGER);
+
         var savedEmployee = employeeRepository.save(employee);
+
         return employeeMapper.toResponse(savedEmployee);
     }
 
     public void deleteEmployee(Long employeeId) {
-        var employee = employeeRepository.findById(employeeId).orElse(null);
-        if (employee == null) {
-            throw new EmployeeNotFound();
-        }
-        employeeRepository.delete(employee);
+        employeeRepository.delete(findEmployee(employeeId));
+    }
+
+    private Employee findEmployee(Long employeeId) {
+        return employeeRepository.findById(employeeId)
+                .orElseThrow(() -> new EmployeeNotFound("Employee " + employeeId + " not found"));
+    }
+
+    private Department findDepartment(Long id) {
+        return departmentRepository.findById(id)
+                .orElseThrow(() -> new DepartmentNotFound("Department " + id + " not found"));
     }
 }

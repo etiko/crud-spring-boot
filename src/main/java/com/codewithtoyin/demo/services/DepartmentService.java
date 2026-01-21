@@ -27,11 +27,12 @@ public class DepartmentService {
     }
 
     public DepartmentResponse getDepartmentById(Long id) {
-        return departmentMapper.toResponse(getDepartment(id));
+        return departmentMapper.toResponse(findDepartment(id));
     }
 
     public DepartmentResponse createDepartment(DepartmentRequest request) {
         var department = departmentMapper.toEntity(request);
+
         department.setCreatedAt(LocalDateTime.now());
 
         var savedDepartment = departmentRepository.save(department);
@@ -40,7 +41,8 @@ public class DepartmentService {
     }
 
     public DepartmentResponse updateDepartment(Long id, DepartmentRequest request) {
-        var department = getDepartment(id);
+        var department = findDepartment(id);
+
         departmentMapper.update(request, department);
 
         var savedDepartment = departmentRepository.save(department);
@@ -49,11 +51,12 @@ public class DepartmentService {
     }
 
     public void deleteDepartment(Long id) {
-        departmentRepository.delete(getDepartment(id));
+        departmentRepository.delete(findDepartment(id));
     }
 
-    private Department getDepartment(Long id) {
-        return departmentRepository.findById(id).orElseThrow(() -> new DepartmentNotFound());
+    private Department findDepartment(Long id) {
+        return departmentRepository.findById(id)
+                .orElseThrow(() -> new DepartmentNotFound("Department " + id + " not found"));
     }
 
 }
