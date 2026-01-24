@@ -1,62 +1,20 @@
 package com.codewithtoyin.demo.services;
 
-import com.codewithtoyin.demo.dtos.DepartmentResponse;
 import com.codewithtoyin.demo.dtos.DepartmentRequest;
+import com.codewithtoyin.demo.dtos.DepartmentResponse;
 import com.codewithtoyin.demo.entities.Department;
 import com.codewithtoyin.demo.exceptions.DepartmentNotFound;
-import com.codewithtoyin.demo.mappers.DepartmentMapper;
-import com.codewithtoyin.demo.repositories.DepartmentRepository;
-import lombok.AllArgsConstructor;
-import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
-@Service
-@AllArgsConstructor
-public class DepartmentService {
+public interface DepartmentService {
+    List<DepartmentResponse> getDepartments();
 
-    private final DepartmentMapper departmentMapper;
-    private final DepartmentRepository departmentRepository;
+    DepartmentResponse getDepartmentById(Long id);
 
-    public List<DepartmentResponse> getDepartments() {
-        return departmentRepository.findAll()
-                .stream()
-                .map(departmentMapper::toResponse)
-                .toList();
-    }
+    DepartmentResponse createDepartment(DepartmentRequest request);
 
-    public DepartmentResponse getDepartmentById(Long id) {
-        return departmentMapper.toResponse(findDepartment(id));
-    }
+    DepartmentResponse updateDepartment(Long id, DepartmentRequest request);
 
-    public DepartmentResponse createDepartment(DepartmentRequest request) {
-        var department = departmentMapper.toEntity(request);
-
-        department.setCreatedAt(LocalDateTime.now());
-
-        var savedDepartment = departmentRepository.save(department);
-
-        return departmentMapper.toResponse(savedDepartment);
-    }
-
-    public DepartmentResponse updateDepartment(Long id, DepartmentRequest request) {
-        var department = findDepartment(id);
-
-        departmentMapper.update(request, department);
-
-        var savedDepartment = departmentRepository.save(department);
-
-        return departmentMapper.toResponse(savedDepartment);
-    }
-
-    public void deleteDepartment(Long id) {
-        departmentRepository.delete(findDepartment(id));
-    }
-
-    private Department findDepartment(Long id) {
-        return departmentRepository.findById(id)
-                .orElseThrow(() -> new DepartmentNotFound("Department " + id + " not found"));
-    }
-
+    void deleteDepartment(Long id);
 }

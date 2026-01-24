@@ -19,11 +19,12 @@ import java.util.List;
 
 @Service
 @AllArgsConstructor
-public class EmployeeService {
+public class EmployeeServiceImpl implements EmployeeService {
     private final EmployeeMapper employeeMapper;
     private final DepartmentRepository departmentRepository;
     private final EmployeeRepository employeeRepository;
 
+    @Override
     public List<EmployeeResponse> getEmployees() {
         return employeeRepository.findAll()
                 .stream()
@@ -31,12 +32,14 @@ public class EmployeeService {
                 .toList();
     }
 
+    @Override
     public EmployeeResponse getEmployee(Long employeeId) {
         var employee =findEmployee(employeeId);
 
         return employeeMapper.toResponse(employee);
     }
 
+    @Override
     public EmployeeResponse createEmployee(EmployeeRequest request) {
         var department = findDepartment(request.getDepartmentId());
 
@@ -54,6 +57,7 @@ public class EmployeeService {
         return employeeMapper.toResponse(savedEmployee);
     }
 
+    @Override
     public EmployeeResponse updateEmployee(Long employeeId, EmployeeRequest request) {
         var department = findDepartment(request.getDepartmentId());
         var employee = findEmployee(employeeId);
@@ -66,6 +70,7 @@ public class EmployeeService {
         return employeeMapper.toResponse(savedEmployee);
     }
 
+    @Override
     public EmployeeResponse updateEmployeeRole(Long employeeId) {
         var employee = findEmployee(employeeId);
 
@@ -76,6 +81,7 @@ public class EmployeeService {
         return employeeMapper.toResponse(savedEmployee);
     }
 
+    @Override
     public void deleteEmployee(Long employeeId) {
         employeeRepository.delete(findEmployee(employeeId));
     }
